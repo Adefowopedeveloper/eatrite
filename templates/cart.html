@@ -9,113 +9,141 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
         body {
-            background-color: rgb(238, 213, 73);
-            color: #0f0f0f;
+            background-image: url("/static/back.jpg"); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            padding-top: 80px;
+        }
+
+        .navbar a {
+            color: white !important;
         }
     </style>
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow">
+        <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'eatritelogo.webp' %}" alt="Eatrite Logo" height="70" width="70">
+                <img src="{% static 'eatritelogo.webp' %}" alt="logo" height="70" width="70" class="me-2">
                 Welcome to EATRITE – Where Flavor Meets Freshness!
+
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="{% url 'cart' %}">Cart</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{% url 'cart' %}">
+                            🛒
+                            <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                0
+                            </span>
+                        </a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About Us</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Cart Section -->
-    <section id="cart" class="container mt-5">
-        <h2>Your Cart</h2>
-        <div id="cart-items"></div>
-        <div id="cart-total" class="mt-3"></div>
-        <div class="d-flex justify-content-between mt-4 flex-wrap gap-2">
-            <button class="btn btn-secondary" onclick="goBackToMenu()">Go Back to Menu</button>
-            <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
-            <button class="btn btn-success" onclick="proceedToCheckout()">Proceed to Checkout</button>
-        </div>
-    </section>
-
-    <!-- Checkout Section -->
-    <section id="checkout" class="container mt-5 d-none">
-        <h3>Payment and Delivery Information</h3>
-
-        <div class="mb-3" id="payment-section">
-            <label for="payment-method">Choose Payment Method:</label>
-            <select id="payment-method" class="form-select" onchange="togglePaymentDetails()" required>
-                <option value="">Select Payment Method</option>
-                <option value="transfer">Bank Transfer</option>
-                <option value="cod">Cash on Delivery</option>
-            </select>
-        </div>
-        
-        <div id="transfer-info" class="mt-3 d-none">
-            <h5>Transfer Information</h5>
-            <p><strong>Bank Name:</strong> Opay</p>
-            <p><strong>Account Name:</strong> Eatrite Restaurants</p>
-            <p><strong>Account Number:</strong> 7059693349</p>
-        </div>
-
-        <div class="mt-3">
-            <div class="mb-3">
-                <label for="name">Full Name:</label>
-                <input type="text" id="name" class="form-control" required>
+    <main>
+        <!-- Cart Section -->
+        <section id="cart" class="container mt-5">
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total" class="mt-3"></div>
+            <div class="d-flex justify-content-between mt-4 flex-wrap gap-2">
+                <button class="btn btn-secondary" onclick="goBackToMenu()">Go Back to Menu</button>
+                <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
+                <button class="btn btn-success" onclick="proceedToCheckout()">Proceed to Checkout</button>
             </div>
-            <div class="mb-3">
-                <label for="email">Email Address:</label>
-                <input type="email" id="email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="address">Delivery Address:</label>
-                <input type="text" id="address" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="note">Delivery Note (Optional):</label>
-                <textarea id="note" class="form-control"></textarea>
-            </div>
-        </div>
+        </section>
 
-        <button type="button" id="submit-btn" class="btn btn-primary" onclick="placeOrder()">Place Order</button>
-    </section>
+        <!-- Checkout Section -->
+        <section id="checkout" class="container mt-5 d-none">
+            <h3>Payment and Delivery Information</h3>
 
-    <!-- Thank You Message -->
-    <section id="thank-you" class="container mt-5 text-center d-none animate__animated animate__fadeIn">
-        <h2 class="text-success">🎉 Thank you for shopping with EATRITE!</h2>
-        <h2 class="text-success">🎉 Our frontdesk will reach out shortly</h2>
-        <p>You will be redirected to the homepage shortly...</p>
-    </section>
+            <div class="mb-3" id="payment-section">
+                <label for="payment-method">Choose Payment Method:</label>
+                <select id="payment-method" class="form-select" onchange="togglePaymentDetails()" required>
+                    <option value="">Select Payment Method</option>
+                    <option value="transfer">Bank Transfer</option>
+                    <option value="cod">Cash on Delivery</option>
+                </select>
+            </div>
+            
+            <div id="transfer-info" class="mt-3 d-none">
+                <h5>Transfer Information</h5>
+                <p><strong>Bank Name:</strong> Opay</p>
+                <p><strong>Account Name:</strong> Eatrite Restaurants</p>
+                <p><strong>Account Number:</strong> 7059693349</p>
+            </div>
 
-    <!-- Empty Cart Alert -->
-    <section id="empty-cart-message" class="container mt-5 text-center d-none animate__animated animate__fadeIn">
-        <h2 class="text-danger">🚫 Cannot proceed: Your cart is empty.</h2>
-        <p>Returning to the menu...</p>
-    </section>
+            <div class="mt-3">
+                <div class="mb-3">
+                    <label for="name">Full Name:</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="address">Delivery Address:</label>
+                    <input type="text" id="address" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="note">Delivery Note (Optional):</label>
+                    <textarea id="note" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <button type="button" id="submit-btn" class="btn btn-primary" onclick="placeOrder()">Place Order</button>
+        </section>
+
+        <!-- Thank You Message -->
+        <section id="thank-you" class="container mt-5 text-center d-none animate__animated animate__fadeIn">
+            <h2 class="text-success">🎉 Thank you for shopping with EATRITE!</h2>
+            <h2 class="text-success">🎉 Our frontdesk will reach out shortly</h2>
+            <p>You will be redirected to the homepage shortly...</p>
+        </section>
+
+        <!-- Empty Cart Alert -->
+        <section id="empty-cart-message" class="container mt-5 text-center d-none animate__animated animate__fadeIn">
+            <h2 class="text-danger">🚫 Cannot proceed: Your cart is empty.</h2>
+            <p>Returning to the menu...</p>
+        </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
+    <footer class="bg-dark text-white text-center py-3">
         <p>&copy; 2024 Eatrite Restaurant. All rights reserved.</p>
     </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function groupItemsByName(cart) {
             const grouped = {};
@@ -123,52 +151,60 @@
                 if (grouped[item.name]) {
                     grouped[item.name].quantity += 1;
                 } else {
-                    grouped[item.name] = { price: item.price, quantity: 1 };
+                    grouped[item.name] = { name: item.name, price: item.price, quantity: 1 };
                 }
             });
-            return grouped;
+            return Object.values(grouped);
         }
-
+    
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const badge = document.getElementById("cart-count");
+            badge.textContent = cart.length;
+            badge.style.display = cart.length > 0 ? 'inline-block' : 'none';
+        }
+    
         function loadCart() {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const cartItemsDiv = document.getElementById('cart-items');
             const cartTotalDiv = document.getElementById('cart-total');
-
+    
+            updateCartCount();
+    
             if (!cart.length) {
                 cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
                 cartTotalDiv.innerHTML = "<h4>Total: $0.00</h4>";
                 return;
             }
-
+    
             const groupedItems = groupItemsByName(cart);
             let total = 0;
             cartItemsDiv.innerHTML = '';
-
-            for (const name in groupedItems) {
-                const item = groupedItems[name];
+    
+            groupedItems.forEach(item => {
                 total += item.price * item.quantity;
                 cartItemsDiv.innerHTML += `
                     <div class="card mb-2">
                         <div class="card-body d-flex justify-content-between align-items-center">
-                            <span>${name}</span>
+                            <span>${item.name}</span>
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-warning btn-sm" onclick="updateQuantity('${name}', -1)">-</button>
+                                <button class="btn btn-warning btn-sm" onclick="updateQuantity('${item.name}', -1)">-</button>
                                 <span class="mx-2">${item.quantity}</span>
-                                <button class="btn btn-warning btn-sm" onclick="updateQuantity('${name}', 1)">+</button>
+                                <button class="btn btn-warning btn-sm" onclick="updateQuantity('${item.name}', 1)">+</button>
                             </div>
                             <span>$${(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                     </div>
                 `;
-            }
-
+            });
+    
             cartTotalDiv.innerHTML = `<h4>Total: $${total.toFixed(2)}</h4>`;
         }
-
+    
         function updateQuantity(name, change) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             const index = cart.findIndex(item => item.name === name);
-
+    
             if (index !== -1) {
                 if (change > 0) {
                     cart.push(cart[index]);
@@ -179,81 +215,118 @@
                 loadCart();
             }
         }
-
+    
         function clearCart() {
             localStorage.removeItem('cart');
             loadCart();
         }
-
+    
         function goBackToMenu() {
             window.location.href = "{% url 'menu' %}";
         }
-
+    
         function proceedToCheckout() {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             if (!cart.length) {
                 document.getElementById('cart').classList.add('d-none');
                 document.getElementById('empty-cart-message').classList.remove('d-none');
-
                 setTimeout(() => {
                     window.location.href = "{% url 'menu' %}";
                 }, 1000);
                 return;
             }
-
             document.getElementById('cart').classList.add('d-none');
             document.getElementById('checkout').classList.remove('d-none');
         }
-
+    
         function togglePaymentDetails() {
             const method = document.getElementById('payment-method').value;
             const transferInfo = document.getElementById('transfer-info');
             transferInfo.classList.toggle('d-none', method !== 'transfer');
         }
-
+    
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
         function placeOrder() {
             const nameField = document.getElementById("name");
             const emailField = document.getElementById("email");
             const addressField = document.getElementById("address");
             const phoneField = document.getElementById("phone");
             const paymentField = document.getElementById("payment-method");
-        
+    
             let isValid = true;
-        
-            // Helper to show or remove error
-            function validateField(field) {
+            [nameField, emailField, addressField, phoneField, paymentField].forEach(field => {
                 if (!field.value.trim()) {
                     field.classList.add("is-invalid");
                     isValid = false;
                 } else {
                     field.classList.remove("is-invalid");
                 }
-            }
-        
-            validateField(nameField);
-            validateField(emailField);
-            validateField(addressField);
-            validateField(phoneField);
-            validateField(paymentField);
-        
+            });
             if (!isValid) return;
-        
+    
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (!cart.length) return;
+    
+            const orderItems = groupItemsByName(cart);
+    
+            const orderData = {
+                name: nameField.value.trim(),
+                email: emailField.value.trim(),
+                address: addressField.value.trim(),
+                phone: phoneField.value.trim(),
+                payment_method: paymentField.value.trim(),
+                cart: orderItems
+            };
+    
             const btn = document.getElementById("submit-btn");
             btn.disabled = true;
             btn.textContent = "Placing Order...";
-        
-            setTimeout(() => {
-                localStorage.removeItem('cart');
-                document.getElementById('checkout').classList.add('d-none');
-                document.getElementById('thank-you').classList.remove('d-none');
-        
-                setTimeout(() => {
-                    window.location.href = "{% url 'home' %}";
-                }, 2000);
-            }, 1000);
+    
+            fetch("/submit_order/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    localStorage.removeItem("cart");
+                    document.getElementById("checkout").classList.add("d-none");
+                    document.getElementById("thank-you").classList.remove("d-none");
+                    setTimeout(() => {
+                        window.location.href = "{% url 'home' %}";
+                    }, 2000);
+                } else {
+                    alert("Failed to place order: " + data.error);
+                    btn.disabled = false;
+                    btn.textContent = "Place Order";
+                }
+            })
+            .catch(error => {
+                console.error("Order error:", error);
+                alert("An error occurred.");
+                btn.disabled = false;
+                btn.textContent = "Place Order";
+            });
         }
-        
-
+    
         window.onload = loadCart;
     </script>
 </body>

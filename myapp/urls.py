@@ -8,7 +8,7 @@ urlpatterns = [
     path('menu/', views.menu, name='menu'),
     path('cart/', views.cart, name='cart'),
     path('about/', views.about, name='about'),
-    path('submit-order/', views.submit_order, name='submit_order'),
+    path('submit_order/', views.submit_order, name='submit_order'),
 ]
 
 # Add this only if settings.DEBUG is True (optional but recommended)
